@@ -2,9 +2,14 @@
 
 > **Learn. Speak. Understand. Improve — with your AI Tutor.**
 
-A build-free, browser-based prototype of the **AI Tutor** language, communication & education app
+A fast, browser-based prototype of the **AI Tutor** language, communication & education app
 described in the product PRD. It implements the Phase‑1 MVP core experience as a clickable,
 runnable web app.
+
+The app ships **pre-compiled** as a single `app.js` (JSX already converted to
+`React.createElement`), so the browser only loads React + one small script — **no in-browser
+Babel compilation**, which makes it load quickly. Regenerate the bundle with `./build.sh` after
+editing anything in `js/`.
 
 ## What this is (and isn't)
 
@@ -56,13 +61,21 @@ the app automatically falls back to the offline engine.
 
 **Option A — open locally**
 
-Because browsers block ES modules and the Web Speech API over the `file://` protocol, serve the
-folder over HTTP:
+Because browsers block some APIs over the `file://` protocol, serve the folder over HTTP:
 
 ```bash
 # Python (any version)
 python3 -m http.server 8000
 # then open http://localhost:8000
+```
+
+### Editing & rebuilding
+
+The source of truth is the `js/` folder (JSX). After changing any file there, regenerate the
+bundle (needs the TypeScript compiler `tsc` on your PATH):
+
+```bash
+./build.sh      # writes a fresh app.js
 ```
 
 **Option B — GitHub Pages**
