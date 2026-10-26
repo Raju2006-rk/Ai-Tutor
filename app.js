@@ -167,9 +167,11 @@ const DEFAULT_STATE = {
         nativeLanguage: "te", // for translation help
         llm: {
             enabled: false,
-            baseUrl: "https://api.openai.com/v1",
+            // Defaults target Google Gemini's OpenAI-compatible endpoint.
+            // (Also works with OpenAI, OpenRouter, Groq, etc. — just change these.)
+            baseUrl: "https://generativelanguage.googleapis.com/v1beta/openai/",
             apiKey: "",
-            model: "gpt-4o-mini",
+            model: "gemini-2.0-flash",
         },
     },
     progress: {
@@ -518,18 +520,25 @@ function buildMessages(userText, ctx, extraSystem) {
 async function chat(cfg, messages) {
     var _a, _b, _c;
     const base = (cfg.baseUrl || "https://api.openai.com/v1").replace(/\/$/, "");
+    const body = {
+        model: cfg.model || "gpt-4o-mini",
+        messages,
+        temperature: 0.5,
+    };
+    // response_format forces JSON output on OpenAI, but some OpenAI-compatible
+    // providers (e.g. older Gemini endpoints) reject it. The prompts already
+    // demand JSON-only and parseJSON() is tolerant, so only request it when the
+    // endpoint is OpenAI itself.
+    if (/api\.openai\.com/.test(base)) {
+        body.response_format = { type: "json_object" };
+    }
     const res = await fetch(`${base}/chat/completions`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${cfg.apiKey}`,
         },
-        body: JSON.stringify({
-            model: cfg.model || "gpt-4o-mini",
-            messages,
-            temperature: 0.5,
-            response_format: { type: "json_object" },
-        }),
+        body: JSON.stringify(body),
     });
     if (!res.ok) {
         const txt = await res.text().catch(() => "");
@@ -1801,7 +1810,7 @@ function LLMSettings({ state, actions }) {
                 result && (React.createElement("div", { className: "feedback " + (result.ok ? "ok" : "no"), style: { marginTop: 10 } },
                     React.createElement("div", { className: "fh" }, result.ok ? "✅ Connected" : "❌ Failed"),
                     result.msg)),
-                React.createElement("div", { className: "hint" }, "Your key is stored only in this browser and sent directly to the provider. Works with OpenAI, OpenRouter, Groq, Together, or a local server (LM Studio/Ollama). For production, proxy requests through your own backend."))))));
+                React.createElement("div", { className: "hint" }, "Your key is stored only in this browser and sent directly to the provider. Default settings use Google Gemini (OpenAI-compatible). Also works with OpenAI, OpenRouter, Groq, or a local server (LM Studio/Ollama). Get a Gemini key free at aistudio.google.com. For production, proxy requests through your own backend."))))));
 }
 function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
 const selectStyle = {

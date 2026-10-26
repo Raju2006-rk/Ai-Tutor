@@ -63,18 +63,27 @@ function buildMessages(userText, ctx, extraSystem) {
 
 async function chat(cfg, messages) {
   const base = (cfg.baseUrl || "https://api.openai.com/v1").replace(/\/$/, "");
+
+  const body = {
+    model: cfg.model || "gpt-4o-mini",
+    messages,
+    temperature: 0.5,
+  };
+  // response_format forces JSON output on OpenAI, but some OpenAI-compatible
+  // providers (e.g. older Gemini endpoints) reject it. The prompts already
+  // demand JSON-only and parseJSON() is tolerant, so only request it when the
+  // endpoint is OpenAI itself.
+  if (/api\.openai\.com/.test(base)) {
+    body.response_format = { type: "json_object" };
+  }
+
   const res = await fetch(`${base}/chat/completions`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       "Authorization": `Bearer ${cfg.apiKey}`,
     },
-    body: JSON.stringify({
-      model: cfg.model || "gpt-4o-mini",
-      messages,
-      temperature: 0.5,
-      response_format: { type: "json_object" },
-    }),
+    body: JSON.stringify(body),
   });
   if (!res.ok) {
     const txt = await res.text().catch(() => "");

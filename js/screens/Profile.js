@@ -175,8 +175,9 @@ function LLMSettings({ state, actions }) {
             )}
             <div className="hint">
               Your key is stored only in this browser and sent directly to the provider.
-              Works with OpenAI, OpenRouter, Groq, Together, or a local server (LM Studio/Ollama).
-              For production, proxy requests through your own backend.
+              Default settings use Google Gemini (OpenAI-compatible). Also works with OpenAI,
+              OpenRouter, Groq, or a local server (LM Studio/Ollama). Get a Gemini key free at
+              aistudio.google.com. For production, proxy requests through your own backend.
             </div>
           </>
         )}

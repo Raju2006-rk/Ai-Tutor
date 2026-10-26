@@ -23,9 +23,11 @@ const DEFAULT_STATE = {
     nativeLanguage: "te",    // for translation help
     llm: {                   // real LLM provider (optional; mock used when disabled)
       enabled: false,
-      baseUrl: "https://api.openai.com/v1",
+      // Defaults target Google Gemini's OpenAI-compatible endpoint.
+      // (Also works with OpenAI, OpenRouter, Groq, etc. — just change these.)
+      baseUrl: "https://generativelanguage.googleapis.com/v1beta/openai/",
       apiKey: "",
-      model: "gpt-4o-mini",
+      model: "gemini-2.0-flash",
     },
   },
   progress: {
