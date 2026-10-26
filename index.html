@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0f0b1e" />
+  <title>AI Tutor — Learn. Speak. Understand. Improve.</title>
+  <link rel="preconnect" href="https://unpkg.com" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="root">
+    <div class="boot">
+      <div class="boot-logo">🤖</div>
+      <div class="boot-title">AI Tutor</div>
+      <div class="boot-sub">Loading your learning assistant…</div>
+      <noscript>This app requires JavaScript.</noscript>
+    </div>
+  </div>
+
+  <!-- React + Babel loaded from CDN so the app runs with no build step.
+       Your browser fetches these; the dev sandbox does not need network access. -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- App sources. type="text/babel" lets Babel compile JSX in the browser. -->
+  <script type="text/babel" src="js/data.js"></script>
+  <script type="text/babel" src="js/store.js"></script>
+  <script type="text/babel" src="js/speech.js"></script>
+  <script type="text/babel" src="js/docExtract.js"></script>
+  <script type="text/babel" src="js/llmProvider.js"></script>
+  <script type="text/babel" src="js/aiEngine.js"></script>
+  <script type="text/babel" src="js/components/UI.js"></script>
+  <script type="text/babel" src="js/components/Nav.js"></script>
+  <script type="text/babel" src="js/screens/Onboarding.js"></script>
+  <script type="text/babel" src="js/screens/Home.js"></script>
+  <script type="text/babel" src="js/screens/Chat.js"></script>
+  <script type="text/babel" src="js/screens/Quiz.js"></script>
+  <script type="text/babel" src="js/screens/Progress.js"></script>
+  <script type="text/babel" src="js/screens/Profile.js"></script>
+  <script type="text/babel" src="js/App.js"></script>
+  <script type="text/babel" data-presets="react">
+    const { createRoot } = ReactDOM;
+    createRoot(document.getElementById('root')).render(<App />);
+  </script>
+
+  <!-- Fallback: if the CDN libraries failed to load (offline / blocked network),
+       show guidance instead of a blank screen. -->
+  <script>
+    window.addEventListener('load', function () {
+      setTimeout(function () {
+        var ok = window.React && window.ReactDOM && window.Babel;
+        var root = document.getElementById('root');
+        if (!ok && root) {
+          root.innerHTML =
+            '<div class="boot">' +
+            '<div class="boot-logo">📡</div>' +
+            '<div class="boot-title">Couldn\'t load the app libraries</div>' +
+            '<div class="boot-sub" style="max-width:320px;text-align:center;line-height:1.5">' +
+            'This prototype loads React from a CDN (unpkg.com). Your network appears to be ' +
+            'blocking it. Connect to the internet, or host the three CDN files locally, then reload.' +
+            '</div></div>';
+        }
+      }, 4000);
+    });
+  </script>
+</body>
+</html>
